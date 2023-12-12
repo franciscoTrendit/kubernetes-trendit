@@ -1,4 +1,4 @@
-name: My Workflow
+name: Obtener Tag de la Rama Mergeada
 
 on:
   push:
@@ -6,21 +6,14 @@ on:
       - main
 
 jobs:
-  my_job:
+  obtener-tag:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Print Tag Information
+    - name: Obtener Información del Evento
       run: |
-        echo "Ref: $GITHUB_REF"
-        echo "SHA: $GITHUB_SHA"
-        if [[ $GITHUB_REF == refs/tags/* ]]; then
-          echo "This push is associated with a tag."
-          tag_name=$(echo $GITHUB_REF | sed 's/^refs\/tags\///')
-          echo "Tag Name: $tag_name"
-        else
-          echo "This push is not associated with a tag."
-        fi
+        TAG_NAME=$(git describe --tags --abbrev=0 ${{ github.event.before }})
+        echo "El último tag en la rama mergeada fue: $TAG_NAME"
